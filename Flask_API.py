@@ -1,6 +1,6 @@
 # Import necessary modules
-from flask import Flask, jsonify, request
-from sqlalchemy import create_engine, Column, Integer, Float, String
+from flask import Flask, jsonify, request, render_template
+from sqlalchemy import create_engine, Column, Integer, Float, String, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
@@ -33,8 +33,8 @@ class Accident(Base):
     VEHICLE_MAKE = Column(String)
     VEHICLE_TYPE = Column(Float)
     VEHICLE_POWER = Column(String)
-    OWNER_POSTCODE = Column(Integer)
-    VEHICLE_YEAR_MANUF = Column(Integer)
+    OWNER_POSTCODE = Column(String)
+    VEHICLE_YEAR_MANUF = Column(String)
 
 # Create the table structure based on the above class
 Base.metadata.create_all(engine)
@@ -55,8 +55,12 @@ def create_geojson_feature(accident):
         }
     }
 
-# Define the default route, serving GeoJSON data of accident locations
-@app.route("/")
+# Define home route
+@app.route('/')
+def home():
+   return render_template('index.html')
+
+@app.route("/all_accidents")
 def accident_locations():
     
     # Establish a connection to the SQLite database
@@ -87,6 +91,21 @@ def accident_locations():
     # Close the database session and return the GeoJSON object as JSON response
     session.close()
     return jsonify(geojson_object)
+
+@app.route("/accidents_by_LGA")
+def accidents_by_lga():
+    session = Session(engine)  
+
+    # SQL query
+    result = session.query(Accident.LGA_NAME, func.count(Accident.ACCIDENT_NO).label("Total_Accidents")) \
+                    .group_by(Accident.LGA_NAME).all()
+
+    session.close() 
+
+    # Convert the result into a JSON-compatible list of dictionaries
+    lga_accidents = [{"LGA Name": lga, "Total Accidents": count} for lga, count in result]
+
+    return jsonify(lga_accidents)  # Return the result as a JSON response
 
 # Define the PERSON route, serving PERSON INFO data
 @app.route("/person_info")
