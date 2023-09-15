@@ -1,179 +1,137 @@
 # Import necessary modules
 from flask import Flask, jsonify, request, render_template
-from sqlalchemy import create_engine, Column, Integer, Float, String, func
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session
+import sqlite3
 
-# Initialise Flask application
+# Initialize Flask application
 app = Flask(__name__)
 
-# Define the database engine
-engine = create_engine('sqlite:///vic_accidents.db')
-
-# Define a base class using SQLAlchemy's declarative_base
-Base = declarative_base()
-
-# Define the Accident class
-class Accident(Base):
-    __tablename__ = 'accidents'
-    
-    ACCIDENT_NO = Column(String, primary_key=True)
-    ACCIDENT_DATE = Column(String)
-    ACCIDENT_TYPE_DESC = Column(String)
-    DAY_WEEK_DESC = Column(String)
-    SEVERITY = Column(Integer)
-    NODE_ID = Column(Integer)
-    SEX = Column(String)
-    AGE_GROUP = Column(String)
-    LAT = Column(Float)
-    LONG = Column(Float)
-    LGA_NAME = Column(String)
-    ACCIDENT_POSTCODE = Column(String)
-    VEHICLE_BODY_STYLE = Column(String)
-    VEHICLE_MAKE = Column(String)
-    VEHICLE_TYPE = Column(Float)
-    VEHICLE_POWER = Column(String)
-    OWNER_POSTCODE = Column(String)
-    VEHICLE_YEAR_MANUF = Column(String)
-
-# Create the table structure based on the above class
-Base.metadata.create_all(engine)
-
-# Define a function to create a GeoJSON feature from an Accident object
+# Function to create a GeoJSON feature
 def create_geojson_feature(accident):
     return {
         "type": "Feature",
         "geometry": {
             "type": "Point",
-            "coordinates": [accident.LONG, accident.LAT]
+            "coordinates": [accident["LONG"], accident["LAT"]]
         },
         "properties": {
-            "Accident No": accident.ACCIDENT_NO,
-            "LGA Name": accident.LGA_NAME,
-            "Accident Severity": accident.SEVERITY,
-            "Accident Postcode": accident.ACCIDENT_POSTCODE
+            "Accident No": accident["ACCIDENT_NO"],
+            "LGA Name": accident["LGA_NAME"],
+            "Accident Severity": accident["SEVERITY"],
+            "Accident Postcode": accident["ACCIDENT_POSTCODE"]
         }
     }
 
-# Define home route
+# Home route
 @app.route('/')
 def home():
-   return render_template('index.html')
+    return render_template('index.html')
 
 @app.route("/all_accidents")
 def accident_locations():
-    
-    # Establish a connection to the SQLite database
-    session = Session(engine)
-    
-    # Get query parameters from the request
-    severity_filter = request.args.get('severity', default=None, type=int)
-    
-    # Create an empty list to store GeoJSON features
-    geojson_features = []
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
 
-    # Query the database for accidents and convert them to GeoJSON features
-    # Apply the severity filter to the query (if requested)
+    severity_filter = request.args.get('severity', default=None, type=int)
     if severity_filter is not None:
-        for accident in session.query(Accident).filter(Accident.SEVERITY == severity_filter).all():
-            feature = create_geojson_feature(accident)
-            geojson_features.append(feature)
+        cursor.execute("SELECT * FROM accidents WHERE SEVERITY=?", (severity_filter,))
     else:
-        for accident in session.query(Accident).all():
-            feature = create_geojson_feature(accident)
-            geojson_features.append(feature)
-    # Wrap the features in a GeoJSON object
+        cursor.execute("SELECT * FROM accidents")
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    geojson_features = [create_geojson_feature({col[0]: row[idx] for idx, col in enumerate(cursor.description)}) for row in rows]
+
     geojson_object = {
         "type": "FeatureCollection",
         "features": geojson_features
-    }    
-    
-    # Close the database session and return the GeoJSON object as JSON response
-    session.close()
+    }
+
     return jsonify(geojson_object)
 
 @app.route("/accidents_by_LGA")
 def accidents_by_lga():
-    session = Session(engine)  
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
 
-    # SQL query
-    result = session.query(Accident.LGA_NAME, func.count(Accident.ACCIDENT_NO).label("Total_Accidents")) \
-                    .group_by(Accident.LGA_NAME).all()
+    # Total Accidents by LGA
+    cursor.execute("SELECT LGA_NAME, COUNT(ACCIDENT_NO) FROM accidents GROUP BY LGA_NAME")
+    total_accidents_result = cursor.fetchall()
 
-    session.close() 
+    # SQL query for the Worst Postcode per LGA
+    worst_postcode_sql_query = '''
+    SELECT LGA_NAME, ACCIDENT_POSTCODE, COUNT(*) as num_accidents
+    FROM accidents
+    GROUP BY LGA_NAME, ACCIDENT_POSTCODE
+    ORDER BY LGA_NAME, num_accidents DESC
+    '''
+    cursor.execute(worst_postcode_sql_query)
+    worst_postcode_result = cursor.fetchall()
 
-    # Convert the result into a JSON-compatible list of dictionaries
-    lga_accidents = [{"LGA Name": lga, "Total Accidents": count} for lga, count in result]
+    conn.close()
 
-    return jsonify(lga_accidents)  # Return the result as a JSON response
+    total_accidents_dict = {lga: count for lga, count in total_accidents_result}
+    worst_postcode_dict = {}
+    for lga, postcode, _ in worst_postcode_result:
+        if lga not in worst_postcode_dict:
+            worst_postcode_dict[lga] = postcode
 
-# Define the PERSON route, serving PERSON INFO data
+    lga_details = [
+        {
+            "LGA Name": lga.replace("(", "").replace(")", ""),
+            "Total LGA Accidents": total_accidents_dict.get(lga, 0),
+            "Postcode with highest no. accidents": worst_postcode_dict.get(lga, "N/A")
+        }
+        for lga in total_accidents_dict.keys()
+    ]
+
+    return jsonify(lga_details)
+
 @app.route("/person_info")
-def person_info(): 
+def person_info():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
 
-    # Establish a connection to the SQLite database
-    session = Session(engine)
+    cursor.execute("SELECT ACCIDENT_NO, AGE_GROUP, SEX, OWNER_POSTCODE FROM accidents")
+    person_results = cursor.fetchall()
 
-    # Query database for relevant fields 
-    person_results = session.query(
-        Accident.ACCIDENT_NO,
-        Accident.AGE_GROUP,
-        Accident.SEX,
-        Accident.OWNER_POSTCODE
-    ).all()
-    
-    # close the database session
-    session.close()
-    
-    # Create a list of dictionaries for the JSON response
-    # Needs to include Accident_No, Age_Group, Sex, Owner_Postcode
-    person_info = []
-    
-    for result in person_results:
-        accident_no, age_group, sex, owner_postcode = result
-        person_info.append({
+    conn.close()
+
+    person_info = [
+        {
             "Accident No": accident_no,
             "Age Group": age_group,
             "Gender": sex,
             "Owner's Postcode": owner_postcode
-        })
+        }
+        for accident_no, age_group, sex, owner_postcode in person_results
+    ]
 
     return jsonify(person_info)
 
 @app.route("/vehicle_info")
 def vehicle_info():
-    
-    # Establish a connection to the SQLite database
-    session = Session(engine)
-    
-    # Retrieve relevant fields from the database
-    vehicle_results = session.query(
-        Accident.ACCIDENT_NO,
-        Accident.VEHICLE_YEAR_MANUF,
-        Accident.VEHICLE_POWER,
-        Accident.VEHICLE_MAKE,
-        Accident.VEHICLE_BODY_STYLE
-    ).all()
-    
-    session.close()
-    
-    vehicle_info = []
-    
-    for result in vehicle_results:
-        accident_no, vehicle_year_manuf, vehicle_power, vehicle_make, vehicle_body_style = result
-    
-        vehicle_info.append({
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT ACCIDENT_NO, VEHICLE_YEAR_MANUF, VEHICLE_POWER, VEHICLE_MAKE, VEHICLE_BODY_STYLE FROM accidents")
+    vehicle_results = cursor.fetchall()
+
+    conn.close()
+
+    vehicle_info = [
+        {
             "Accident No": accident_no,
             "Vehicle Year Manufactured": vehicle_year_manuf,
             "Vehicle Power": vehicle_power,
             "Vehicle Make": vehicle_make,
             "Vehicle Body Style": vehicle_body_style
-            
-        })
-    
-    return jsonify(vehicle_info)    
+        }
+        for accident_no, vehicle_year_manuf, vehicle_power, vehicle_make, vehicle_body_style in vehicle_results
+    ]
 
-# Start the Flask application   
+    return jsonify(vehicle_info)
+
+# Start the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
-
