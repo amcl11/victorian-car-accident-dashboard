@@ -1,0 +1,33 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f7e6cf;
+}
+
+h1 {
+  color: #3679dc;
+  text-align: center; 
+  font-family: 'Courier New', Courier, monospace;
+  font-size:x-large;
+  font-weight:bolder;
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  text-shadow:0cqmax
+}
+
+.popup-title {
+  color: #114799;
+  font-size: 12px;
+  text-align: center;
+
+}
+
+p {
+  color: #666;
+}
+
+#mapid {
+  height:auto;
+  padding-left: 200px;  
+  padding-right: 1000px; 
+}
