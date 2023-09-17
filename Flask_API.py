@@ -55,7 +55,7 @@ def accidents_by_lga():
     cursor = conn.cursor()
 
     # Total Accidents by LGA
-    cursor.execute("SELECT LGA_NAME, COUNT(ACCIDENT_NO) FROM accidents GROUP BY LGA_NAME")
+    cursor.execute("SELECT LGA_NAME,COUNT(ACCIDENT_NO) FROM accidents GROUP BY LGA_NAME")
     total_accidents_result = cursor.fetchall()
 
     # SQL query for the Worst Postcode per LGA
