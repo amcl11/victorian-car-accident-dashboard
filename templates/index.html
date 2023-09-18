@@ -25,32 +25,39 @@
 <body>
     <h1>Victoria Car Accidents Dashboard</h1>
 
-     <!-- map div -->
+     <!-- Map Container -->
+<div id="map-section">
+    <h2>Accidents By Location</h2>
     <div id="mapid" style="height: 400px;"></div>
-
-
+  </div>
+  
+  <!-- Bar Chart Container -->
+  <div id="bar-section">
+    <h2>Accidents by Category</h2>
+    <label for="filterCategory">Filter by:</label>
+    <select id="filterCategory">
+      <option value="ageGroup">Age Group</option>
+      <option value="gender">Gender</option>
+      <option value="year">Year</option>
+    </select>
+    <div id="barGraph"></div>
+  </div>
+  
+  <!-- Donut Chart Container -->
+  <div id="donut-section">
+    <h2>Accidents by Vehicle Attributes</h2>
+    <label for="donutDropdown">Choose attribute:</label>
+    <select id="donutDropdown">
+      <option value="make">Vehicle Make</option>
+      <option value="power">Vehicle Power</option>
+      <option value="bodyStyle">Vehicle Body Style</option>
+      <option value="year">Vehicle Manufacture Year</option>
+    </select>
+    <div id="donutChart"></div>
+  </div>
+  
     <!-- JavaScript file -->
-    <script type="module" src="static/script.js"></script>
+    <script type="module" src="/static/script.js"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

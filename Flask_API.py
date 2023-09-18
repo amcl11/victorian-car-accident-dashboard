@@ -49,6 +49,8 @@ def accident_locations():
 
     return jsonify(geojson_object)
 
+
+
 @app.route("/accidents_by_LGA")
 def accidents_by_lga():
     conn = sqlite3.connect('vic_accidents.db')
@@ -131,6 +133,117 @@ def vehicle_info():
     ]
 
     return jsonify(vehicle_info)
+
+@app.route('/total_accidents_by_make', methods=['GET'])
+def total_accidents_by_make():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+    by_make = {}
+    cursor.execute("SELECT vehicle_make, COUNT(*) FROM accidents GROUP BY vehicle_make")
+    for row in cursor.fetchall():
+        by_make[row[0]] = row[1]
+    conn.close()
+    return jsonify({'byMake': by_make})
+
+@app.route('/total_accidents_by_manufacture_year', methods=['GET'])
+def total_accidents_by_year():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+    by_year = {}
+    cursor.execute("SELECT vehicle_year_manuf, COUNT(*) FROM accidents GROUP BY vehicle_year_manuf")
+    for row in cursor.fetchall():
+        by_year[row[0]] = row[1]
+    conn.close()
+    return jsonify({'byYear': by_year})
+
+@app.route('/total_accidents_by_power', methods=['GET'])
+def total_accidents_by_power():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+    by_power = {}
+    cursor.execute("SELECT vehicle_power, COUNT(*) FROM accidents GROUP BY vehicle_power")
+    for row in cursor.fetchall():
+        by_power[row[0]] = row[1]
+    conn.close()
+    return jsonify({'byPower': by_power})
+
+@app.route('/total_accidents_by_body_style', methods=['GET'])
+def total_accidents_by_body_style():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+    by_body_style = {}
+    cursor.execute("SELECT vehicle_body_style, COUNT(*) FROM accidents GROUP BY vehicle_body_style")
+    for row in cursor.fetchall():
+        by_body_style[row[0]] = row[1]
+    conn.close()
+    return jsonify({'byBodyStyle': by_body_style})
+
+@app.route("/accidents_by_age_group")
+def accidents_by_age_group():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+
+    # Query to get total accident count grouped by age group
+    cursor.execute("SELECT AGE_GROUP, COUNT(ACCIDENT_NO) FROM accidents GROUP BY AGE_GROUP")
+    age_group_results = cursor.fetchall()
+
+    conn.close()
+
+    # Create the response
+    age_group_info = [
+        {
+            "Age Group": age_group,
+            "Total Accidents": count
+        }
+        for age_group, count in age_group_results
+    ]
+
+    return jsonify(age_group_info)
+
+@app.route("/accidents_by_year")
+def accidents_by_year():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+
+    # Query to get total accident count grouped by accident year
+    cursor.execute("SELECT ACCIDENT_YEAR, COUNT(ACCIDENT_NO) FROM accidents GROUP BY ACCIDENT_YEAR")
+    year_results = cursor.fetchall()
+
+    conn.close()
+
+    # Create the response
+    year_info = [
+        {
+            "Accident Year": year,
+            "Total Accidents": count
+        }
+        for year, count in year_results
+    ]
+
+    return jsonify(year_info)
+
+@app.route("/accidents_by_gender")
+def accidents_by_gender():
+    conn = sqlite3.connect('vic_accidents.db')
+    cursor = conn.cursor()
+
+    # Query to get total accident count grouped by Gender
+    cursor.execute("SELECT SEX, COUNT(ACCIDENT_NO) FROM accidents GROUP BY SEX")
+    gender_results = cursor.fetchall()
+
+    conn.close()
+
+    # Create the response
+    gender_info = [
+        {
+            "Gender": gender,
+            "Total Accidents": count
+        }
+        for gender, count in gender_results
+    ]
+
+    return jsonify(gender_info)
+
 
 # Start the Flask application
 if __name__ == '__main__':
