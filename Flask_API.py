@@ -183,8 +183,8 @@ def accidents_by_age_group():
     conn = sqlite3.connect('vic_accidents.db')
     cursor = conn.cursor()
 
-    # Query to get total accident count grouped by age group
-    cursor.execute("SELECT AGE_GROUP, COUNT(ACCIDENT_NO) FROM accidents GROUP BY AGE_GROUP")
+    # Query to get total accident count grouped by age group, excluding unwanted age groups
+    cursor.execute("SELECT AGE_GROUP, COUNT(ACCIDENT_NO) FROM accidents WHERE AGE_GROUP NOT IN ('0-4', '13-15') GROUP BY AGE_GROUP")
     age_group_results = cursor.fetchall()
 
     conn.close()
