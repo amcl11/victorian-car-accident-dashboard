@@ -39,3 +39,124 @@ A hypothetical Victorian Car Insurance Company has hired Group 10 to build a das
  - "Logic.js"
  - "Style.css"
 
+## API Documentation:
+---
+
+### Base URL
+All URLs referenced in the API documentation are relative to `http://127.0.0.1:5000/`.
+
+---
+
+### Endpoints
+
+#### 1. `/`
+- **Method**: `GET`
+- **Description**: The home route that serves the main HTML page.
+- **Response Type**: HTML
+- **Example URL**: `http://127.0.0.1:5000/`
+
+---
+
+#### 2. `/all_accidents`
+- **Method**: `GET`
+- **Description**: Retrieves all accident locations. Optionally, you can filter by severity.
+- **Query Parameters**: 
+  - `severity`: An integer that specifies the severity level ranging from 1 - 4 (1 being the most)
+- **Response Type**: JSON (GeoJSON)
+- **Example URL**: `http://127.0.0.1:5000/all_accidents?severity=3`
+
+---
+
+#### 3. `/accidents_by_LGA`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents and the postcode with the highest number of accidents for each Local Government Area (LGA).
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/accidents_by_LGA`
+- **Sample Response**:
+
+```json
+[
+  {
+    "LGA Name": "BALLARAT",
+    "Postcode with highest no. accidents": "3350",
+    "Total LGA Accidents": 1091
+  },
+  ...
+]
+```
+
+---
+
+#### 4. `/person_info`
+- **Method**: `GET`
+- **Description**: Retrieve information related to individuals involved in the accidents, such as age group, gender, and owner's postcode.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/person_info`
+
+---
+
+#### 5. `/vehicle_info`
+- **Method**: `GET`
+- **Description**: Retrieve vehicle-related information for each accident, such as the year of manufacture, vehicle power, make, and body style.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/vehicle_info`
+
+---
+
+#### 6. `/total_accidents_by_make`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by vehicle make.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/total_accidents_by_make`
+
+---
+
+#### 7. `/total_accidents_by_manufacture_year`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by the year of vehicle manufacture.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/total_accidents_by_manufacture_year`
+
+---
+
+#### 8. `/total_accidents_by_power`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by vehicle power.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/total_accidents_by_power`
+
+---
+
+#### 9. `/total_accidents_by_body_style`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by vehicle body style.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/total_accidents_by_body_style`
+
+---
+
+#### 10. `/accidents_by_age_group`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by age group.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/accidents_by_age_group`
+
+---
+
+#### 11. `/accidents_by_year`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by the year the accident occurred.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/accidents_by_year`
+
+---
+
+#### 12. `/accidents_by_gender`
+- **Method**: `GET`
+- **Description**: Retrieve the total number of accidents grouped by gender.
+- **Response Type**: JSON
+- **Example URL**: `http://127.0.0.1:5000/accidents_by_gender`
+
+---
+
+
