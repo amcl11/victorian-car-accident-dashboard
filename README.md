@@ -4,8 +4,8 @@
 This is the repository for Monash University Bootcamp Project 3 (Group 10).
 The goal of this Project is to tell a story using data visualisations with interactivity allowing users to explore the data on their own. 
 
-*Which postcode in the Yarra Ranges LGA has the hights count of accidents?* 
-*Which age group has the highest accident count?*
+*Which postcode in the Yarra Ranges LGA has the highest count of accidents?*  <br>
+*Which age group has the highest accident count?*  <br>
 
 >EXPLORE THE DATASET HERE: (TBC Link to dashboard on Git Pages)
 
