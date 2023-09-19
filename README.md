@@ -61,7 +61,7 @@ All URLs referenced in the API documentation are relative to `http://127.0.0.1:5
 - **Method**: `GET`
 - **Description**: Retrieves all accident locations. Optionally, you can filter by severity.
 - **Query Parameters**: 
-  - `severity`: An integer that specifies the severity level ranging from 1 - 4 (1 being the most)
+  - `severity`: An integer that specifies the severity level ranging from 1 - 4 (1 being the most severe)
 - **Response Type**: JSON (GeoJSON)
 - **Example URL**: `http://127.0.0.1:5000/all_accidents?severity=3`
 
@@ -81,7 +81,6 @@ All URLs referenced in the API documentation are relative to `http://127.0.0.1:5
     "Postcode with highest no. accidents": "3350",
     "Total LGA Accidents": 1091
   },
-  ...
 ]
 ```
 
