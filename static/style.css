@@ -3,7 +3,7 @@ body {
   background-color: #f9f7e6cf;
 }
 
-h1, h2 {
+h1, h2, h3 {
   font-family: 'Courier New', Courier, monospace;
   text-transform: uppercase;
 
@@ -23,6 +23,14 @@ h2 {
   font-size: medium;
   font-weight: bolder;
   letter-spacing: 10px;
+}
+
+h3 {
+  text-align:left;
+  color: #3679dc;
+  font-size: small;
+  font-weight:bold;
+  letter-spacing: 4px;
 }
 
 .popup-title {
