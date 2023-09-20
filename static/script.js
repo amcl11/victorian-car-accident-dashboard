@@ -1,13 +1,17 @@
 // Import lgaColors file
 import { lgaColors } from './lgaColors.js';
-// Initialize map centered at the middle of Victoria, Australia
+
+// Create map centered at the middle of Victoria, Australia
 let mymap = L.map('mapid').setView([-37.8136, 144.9631], 7);
+
 // Add OpenStreetMap layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
+
 // Link to GeoJSON LGA data
 let link = "https://data.gov.au/geoserver/vic-local-government-areas-psma-administrative-boundaries/wfs?request=GetFeature&typeName=ckan_bdf92691_c6fe_42b9_a0e2_a4cd716fa811&outputFormat=json";
+
 // Fetch LGA details from Flask API
 let lgaDetails = [];
 fetch('/accidents_by_LGA')
@@ -15,10 +19,12 @@ fetch('/accidents_by_LGA')
   .then(data => {
     lgaDetails = data;
   });
+
 // Function to choose color
 function chooseColor(lgaName) {
     return lgaColors[lgaName] || '#000000'; // Default to black
 }
+
 // Retrieve GeoJSON data
 d3.json(link).then(function(data) {
     L.geoJson(data, {
@@ -51,6 +57,7 @@ d3.json(link).then(function(data) {
                 click: async function(event) {
                     // Zoom to bounds
                     mymap.fitBounds(event.target.getBounds());
+
                     // Fetch data from the Flask API
                     let response = await fetch('http://127.0.0.1:5000/accidents_by_LGA');
                     if (response.status !== 200) {
@@ -58,10 +65,13 @@ d3.json(link).then(function(data) {
                         return;
                     }
                     let lgaDetails = await response.json();
+
                     // Extract clicked LGA name
                     let clickedLgaName = feature.properties.vic_lga__3;
+
                     // Find matching LGA details from fetched data
                     let exampleLga = lgaDetails.find(lga => lga['LGA Name'] === clickedLgaName) || {};
+
                     // Create popup content
                     let popupContent = `
                         <strong>LGA Name:</strong> ${exampleLga['LGA Name'] || 'N/A'}<br>
@@ -116,7 +126,7 @@ async function drawBarChart(filterBy) {
       textposition: 'auto',
       hoverinfo: 'x+y',
       marker: {
-        color: 'blue'
+        color: '#BF80BC'
       }
     };
     const layout = {
@@ -161,6 +171,7 @@ function createHighchartsChart(attribute) {
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
+
       // Sort the data by accident count in descending order
       const sortedData = Object.entries(data[`by${attribute.charAt(0).toUpperCase() + attribute.slice(1)}`])
         .map(([name, count]) => ({
@@ -168,6 +179,7 @@ function createHighchartsChart(attribute) {
           y: count
         }))
         .sort((a, b) => b.y - a.y);
+
       // Select the top ten items
       const topTenData = sortedData.slice(0, 10);
       Highcharts.chart('chartContainer', {
@@ -176,10 +188,10 @@ function createHighchartsChart(attribute) {
           backgroundColor: '#f9f7e6cf', // Changing background color
         },
         title: {
-          text: `Top Ten Accident count by Vehicle ${attribute.charAt(0).toUpperCase() + attribute.slice(1)}`,
+          text: (`TOP TEN ACCIDENT COUNT BY VEHICLE ${attribute}`).toUpperCase(),
           style: {
-            color: '#3679dc',
-            font: 'bold 16px "Courier New", monospace'
+            color: '#e99000',
+            font: 'normal 18px "Courier New", monospace'
           }
         },
         xAxis: {
@@ -209,7 +221,7 @@ function createHighchartsChart(attribute) {
         series: [{
           name: `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}`,
           data: topTenData.map(item => item.y),
-          color: '#7723F9' // Change the bar color
+          color: '#3679dc' // Change the bar color
         }],
       });
     })
@@ -222,6 +234,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const selectedAttribute = this.value;
     createHighchartsChart(selectedAttribute);
   });
-  // Initialize the chart with the default attribute (e.g., "make")
+  // Initialise the chart with the default attribute (e.g., "make")
   createHighchartsChart("make");
 });
