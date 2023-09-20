@@ -1,39 +1,52 @@
-
 body {
   font-family: Arial, sans-serif;
   background-color: #f9f7e6cf;
 }
 
-h1 {
-  color: #3679dc;
-  text-align: center; 
+h1, h2 {
   font-family: 'Courier New', Courier, monospace;
-  font-size:x-large;
-  font-weight:bolder;
   text-transform: uppercase;
-  letter-spacing: 10px;
-  text-shadow:0cqmax
+
+}
+
+h1 {
+  text-align: center;
+  color: #3679dc;
+  font-size:xx-large;
+  font-weight:bolder;
+  letter-spacing: 4px;
 }
 
 h2 {
-  font-size: 18px; /* Set the size you want */
+  text-align:left;
+  color: #e99000;
+  font-size: medium;
+  font-weight: bolder;
+  letter-spacing: 10px;
 }
-
 
 .popup-title {
   color: #114799;
   font-size: 12px;
   text-align: center;
-
 }
 
 p {
   color: #666;
 }
 
-#mapid {
-  height:auto;
-  padding-left: 200px;  
-  padding-right: 1000px; 
+
+#mapid, #barGraph {
+  height: 400px;
+  width: 100%;
 }
 
+#dashboard {
+  display: flex;
+  justify-content: space-between;
+}
+
+#map-section, #bar-section {
+  width: 45%;
+  box-sizing: border-box;
+}

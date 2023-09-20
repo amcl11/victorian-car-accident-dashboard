@@ -10,54 +10,62 @@
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
 
+    <!-- Highcharts link -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+
     <!-- Leaflet JavaScript code -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
 
-    <!-- D3 library -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Plotly JavaScript library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-    <!-- Our CSS -->
+    <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="static/style.css">
 
 </head>
 <body>
-    <h1>Victoria Car Accidents Dashboard</h1>
+  <h1>Victoria Car Accidents Dashboard</h1>
 
-     <!-- Map Container -->
-<div id="map-section">
-    <h2>Accidents By Location</h2>
-    <div id="mapid" style="height: 400px;"></div>
-  </div>
-  
-  <!-- Bar Chart Container -->
-  <div id="bar-section">
-    <h2>Accidents by Category</h2>
-    <label for="filterCategory">Filter by:</label>
-    <select id="filterCategory">
-      <option value="ageGroup">Age Group</option>
-      <option value="gender">Gender</option>
-      <option value="year">Year</option>
-    </select>
-    <div id="barGraph"></div>
-  </div>
-  
-  <!-- Donut Chart Container -->
-  <div id="donut-section">
-    <h2>Accidents by Vehicle Attributes</h2>
-    <label for="donutDropdown">Choose attribute:</label>
-    <select id="donutDropdown">
-      <option value="make">Vehicle Make</option>
-      <option value="power">Vehicle Power</option>
-      <option value="bodyStyle">Vehicle Body Style</option>
-      <option value="year">Vehicle Manufacture Year</option>
-    </select>
-    <div id="donutChart"></div>
-  </div>
-  
-    <!-- JavaScript file -->
-    <script type="module" src="/static/script.js"></script>
+  <div id="dashboard">
+      <!-- Map Container -->
+      <div id="map-section">
+          <h2>Accidents By Location</h2>
+          <div id="mapid" style="height: 400px;"></div>
+      </div>
 
+      <!-- Bar Chart Container -->
+      <div id="bar-section">
+          <h2>Accidents by Category</h2>
+          <label for="filterCategory">Filter by:</label>
+          <select id="filterCategory">
+              <option value="ageGroup">Age Group</option>
+              <option value="gender">Gender</option>
+              <option value="year">Year</option>
+          </select>
+          <div id="barGraph"></div> <!-- Plotly graph will be rendered here -->
+      </div>
+  </div>
+
+  <!-- Highcharts Container -->
+  <div id="highcharts-section">
+      <h2>Accidents by Vehicle Attributes</h2>
+      <label for="chartDropdown">Choose attribute:</label>
+      <select id="chartDropdown">
+          <option value="make">Vehicle Make</option>
+          <option value="power">Vehicle Power</option>
+          <option value="bodyStyle">Vehicle Body Style</option>
+          <option value="year">Vehicle Manufacture Year</option>
+      </select>
+      <div id="chartContainer"></div>
+  </div>
+
+  <!-- D3 library -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<!-- Your JavaScript file -->
+<script type="module" src="/static/script.js"></script>
 </body>
 </html>
