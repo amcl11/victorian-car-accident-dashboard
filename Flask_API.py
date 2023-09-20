@@ -28,7 +28,7 @@ def home():
 
 @app.route("/all_accidents")
 def accident_locations():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     severity_filter = request.args.get('severity', default=None, type=int)
@@ -53,7 +53,7 @@ def accident_locations():
 
 @app.route("/accidents_by_LGA")
 def accidents_by_lga():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     # Total Accidents by LGA
@@ -91,7 +91,7 @@ def accidents_by_lga():
 
 @app.route("/person_info")
 def person_info():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     cursor.execute("SELECT ACCIDENT_NO, AGE_GROUP, SEX, OWNER_POSTCODE FROM accidents")
@@ -113,7 +113,7 @@ def person_info():
 
 @app.route("/vehicle_info")
 def vehicle_info():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     cursor.execute("SELECT ACCIDENT_NO, VEHICLE_YEAR_MANUF, VEHICLE_POWER, VEHICLE_MAKE, VEHICLE_BODY_STYLE FROM accidents")
@@ -136,7 +136,7 @@ def vehicle_info():
 
 @app.route('/total_accidents_by_make', methods=['GET'])
 def total_accidents_by_make():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
     by_make = {}
     cursor.execute("SELECT vehicle_make, COUNT(*) FROM accidents GROUP BY vehicle_make")
@@ -147,7 +147,7 @@ def total_accidents_by_make():
 
 @app.route('/total_accidents_by_manufacture_year', methods=['GET'])
 def total_accidents_by_year():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
     by_year = {}
     cursor.execute("SELECT vehicle_year_manuf, COUNT(*) FROM accidents GROUP BY vehicle_year_manuf")
@@ -158,7 +158,7 @@ def total_accidents_by_year():
 
 @app.route('/total_accidents_by_power', methods=['GET'])
 def total_accidents_by_power():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
     by_power = {}
     cursor.execute("SELECT vehicle_power, COUNT(*) FROM accidents GROUP BY vehicle_power")
@@ -169,7 +169,7 @@ def total_accidents_by_power():
 
 @app.route('/total_accidents_by_body_style', methods=['GET'])
 def total_accidents_by_body_style():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
     by_body_style = {}
     cursor.execute("SELECT vehicle_body_style, COUNT(*) FROM accidents GROUP BY vehicle_body_style")
@@ -180,7 +180,7 @@ def total_accidents_by_body_style():
 
 @app.route("/accidents_by_age_group")
 def accidents_by_age_group():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     # Query to get total accident count grouped by age group, excluding unwanted age groups
@@ -202,7 +202,7 @@ def accidents_by_age_group():
 
 @app.route("/accidents_by_year")
 def accidents_by_year():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     # Query to get total accident count grouped by accident year
@@ -224,7 +224,7 @@ def accidents_by_year():
 
 @app.route("/accidents_by_gender")
 def accidents_by_gender():
-    conn = sqlite3.connect('vic_accidents.db')
+    conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
     # Query to get total accident count grouped by Gender
