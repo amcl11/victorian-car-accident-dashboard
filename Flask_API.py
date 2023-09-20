@@ -167,7 +167,7 @@ def total_accidents_by_power():
     conn.close()
     return jsonify({'byPower': by_power})
 
-@app.route('/total_accidents_by_body_style', methods=['GET'])
+@app.route('/total_accidents_by_bodyStyle', methods=['GET'])
 def total_accidents_by_body_style():
     conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
