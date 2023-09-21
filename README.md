@@ -158,5 +158,5 @@ All URLs referenced in the API documentation are relative to `http://127.0.0.1:5
 - **Example URL**: `http://127.0.0.1:5000/accidents_by_gender`
 
 ---
-
+Google Slides presentation can be accessed here: [https://docs.google.com/presentation/d/1mBCatXiDrKmazbLQApKrKQ0pfoSANZSmLdUpEqJc1FU/edit?usp=sharing](https://docs.google.com/presentation/d/1mBCatXiDrKmazbLQApKrKQ0pfoSANZSmLdUpEqJc1FU/edit?usp=sharing)
 
