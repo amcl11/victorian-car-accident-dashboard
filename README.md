@@ -7,8 +7,6 @@ The goal of this Project is to tell a story using data visualisations with inter
 *Which postcode in the Yarra Ranges LGA has the highest count of accidents?*  <br>
 *Which age group has the highest accident count?*  <br>
 
->EXPLORE THE DATASET HERE: (TBC Link to dashboard on Git Pages)
-
 ## Project Theme 🚗 🚦 🚸  💥 🚑  →  💰 📋 📊 🛡️ 
 We have chosen a local car accidents dataset to assist with trends and insights to help a car insurance company.
 
