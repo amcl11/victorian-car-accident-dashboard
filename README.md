@@ -36,8 +36,10 @@ A hypothetical Victorian Car Insurance Company has hired Group 10 to build a das
  - "AU_Accidents.ipynb" - Importing raw CSV files, data cleaning, SQLite database import.
  - "Flask_API.py" - Connection to database, API routes created for front-end data access.
  - "Index.html"
- - "Logic.js"
+ - "script.js"
+ - "lgaColors.js" - Color function for Leaflet polygons
  - "Style.css"
+ - "vic_lga.geojson" - Used to map LGA polygons 
 
 ## API Documentation:
 ---
