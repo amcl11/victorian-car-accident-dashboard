@@ -4,6 +4,8 @@
 This is the repository for Monash University Bootcamp Project 3 (Group 10).
 The goal of this Project is to tell a story using data visualisations with interactivity allowing users to explore the data on their own. 
 
+**TO ACCESS THE DASHBOARD:** Please run the *Flask_API.py* file which will direct you to the home / index.html route.
+
 *Which postcode in the Yarra Ranges LGA has the highest count of accidents?*  <br>
 *Which age group has the highest accident count?*  <br>
 
