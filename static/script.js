@@ -53,7 +53,6 @@ d3.json(link).then(function(data) {
           hoverLayer.openPopup();  // Open the popup on mouseover
         },
         mouseout: function(event) {
-          // Do nothing. Let the popup be "sticky"
           event.target.setStyle({ fillOpacity: 0.5 });
         },
         click: function(event) {

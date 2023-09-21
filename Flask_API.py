@@ -2,10 +2,10 @@
 from flask import Flask, jsonify, request, render_template
 import sqlite3
 
-# Initialize Flask application
+# Initialise Flask application
 app = Flask(__name__)
 
-# Function to create a GeoJSON feature
+# Function to convert an accident record to a GeoJSON feature
 def create_geojson_feature(accident):
     return {
         "type": "Feature",
@@ -21,16 +21,19 @@ def create_geojson_feature(accident):
         }
     }
 
-# Home route
+# Route to serve the homepage
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# Route to fetch all accident locations
 @app.route("/all_accidents")
 def accident_locations():
+    # Connect to the SQLite database
     conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
+    # Check if a severity filter is provided in the request
     severity_filter = request.args.get('severity', default=None, type=int)
     if severity_filter is not None:
         cursor.execute("SELECT * FROM accidents WHERE SEVERITY=?", (severity_filter,))
@@ -40,6 +43,7 @@ def accident_locations():
     rows = cursor.fetchall()
     conn.close()
 
+     # Convert each accident record to a GeoJSON feature
     geojson_features = [create_geojson_feature({col[0]: row[idx] for idx, col in enumerate(cursor.description)}) for row in rows]
 
     geojson_object = {
@@ -50,17 +54,17 @@ def accident_locations():
     return jsonify(geojson_object)
 
 
-
+# Route to fetch accident statistics by Local Government Area (LGA)
 @app.route("/accidents_by_LGA")
 def accidents_by_lga():
     conn = sqlite3.connect('vic_accidents.sqlite')
     cursor = conn.cursor()
 
-    # Total Accidents by LGA
+    # SQL query to get total accidents by LGA
     cursor.execute("SELECT LGA_NAME,COUNT(ACCIDENT_NO) FROM accidents GROUP BY LGA_NAME")
     total_accidents_result = cursor.fetchall()
 
-    # SQL query for the Worst Postcode per LGA
+    # SQL query to determine the postcode with the highest number of accidents for each LGA
     worst_postcode_sql_query = '''
     SELECT LGA_NAME, ACCIDENT_POSTCODE, COUNT(*) as num_accidents
     FROM accidents
@@ -72,12 +76,14 @@ def accidents_by_lga():
 
     conn.close()
 
+    # Convert the results to dictionaries for easier access
     total_accidents_dict = {lga: count for lga, count in total_accidents_result}
     worst_postcode_dict = {}
     for lga, postcode, _ in worst_postcode_result:
         if lga not in worst_postcode_dict:
             worst_postcode_dict[lga] = postcode
 
+    # Prepare the final response
     lga_details = [
         {
             "LGA Name": lga.replace("(", "").replace(")", ""),
@@ -89,6 +95,7 @@ def accidents_by_lga():
 
     return jsonify(lga_details)
 
+# Route to fetch person-related information from accidents
 @app.route("/person_info")
 def person_info():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -99,6 +106,7 @@ def person_info():
 
     conn.close()
 
+    # Prepare the final response
     person_info = [
         {
             "Accident No": accident_no,
@@ -111,6 +119,7 @@ def person_info():
 
     return jsonify(person_info)
 
+# Route to fetch vehicle-related information from accidents
 @app.route("/vehicle_info")
 def vehicle_info():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -121,6 +130,7 @@ def vehicle_info():
 
     conn.close()
 
+    # Prepare the final response
     vehicle_info = [
         {
             "Accident No": accident_no,
@@ -134,6 +144,7 @@ def vehicle_info():
 
     return jsonify(vehicle_info)
 
+# Route to fetch total accidents by vehicle make
 @app.route('/total_accidents_by_make', methods=['GET'])
 def total_accidents_by_make():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -146,6 +157,7 @@ def total_accidents_by_make():
     conn.close()
     return jsonify({'byMake': by_make})
 
+# Route to fetch total accidents by vehicle power
 @app.route('/total_accidents_by_power', methods=['GET'])
 def total_accidents_by_power():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -157,6 +169,7 @@ def total_accidents_by_power():
     conn.close()
     return jsonify({'byPower': by_power})
 
+# Route to fetch total accidents by vehicle body style
 @app.route('/total_accidents_by_bodyStyle', methods=['GET'])
 def total_accidents_by_bodyStyle():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -168,6 +181,7 @@ def total_accidents_by_bodyStyle():
     conn.close()
     return jsonify({'byBodyStyle': by_body_style})
 
+# Route to fetch total accidents by vehicle manufacturing year
 @app.route('/total_accidents_by_year', methods=['GET'])
 def total_accidents_by_year():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -180,7 +194,7 @@ def total_accidents_by_year():
     return jsonify({'byYear': by_year})
 
 
-
+# Route to fetch accidents by age group, excluding certain age groups
 @app.route("/accidents_by_age_group")
 def accidents_by_age_group():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -203,6 +217,7 @@ def accidents_by_age_group():
 
     return jsonify(age_group_info)
 
+# Route to fetch accidents by car manufacture year
 @app.route("/accidents_by_year")
 def accidents_by_year():
     conn = sqlite3.connect('vic_accidents.sqlite')
@@ -225,6 +240,7 @@ def accidents_by_year():
 
     return jsonify(year_info)
 
+# Route to fetch accidents by gender
 @app.route("/accidents_by_gender")
 def accidents_by_gender():
     conn = sqlite3.connect('vic_accidents.sqlite')
