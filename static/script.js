@@ -30,7 +30,7 @@ fetch('/accidents_by_LGA')
 
 d3.json(link).then(function(data) {
   console.log("Loaded GeoJSON Data:", data);
-  
+
   L.geoJson(data, {
     style: function(feature) {
       return {
@@ -41,18 +41,20 @@ d3.json(link).then(function(data) {
       };
     },
     onEachFeature: function(feature, layer) {
+      const originalPopupContent = `<h2 class="popup-title">${feature.properties.ABB_NAME}</h2>`;
       // Bind popup with LGA name for mouseover
-      layer.bindPopup(`<h2 class="popup-title">${feature.properties.ABB_NAME}</h2>`);
-      
+      layer.bindPopup(originalPopupContent);
+
       layer.on({
         mouseover: function(event) {
           let hoverLayer = event.target;
           hoverLayer.setStyle({ fillOpacity: 0.9 });
+          hoverLayer.setPopupContent(originalPopupContent); // Reset the popup content
           hoverLayer.openPopup();  // Open the popup on mouseover
         },
         mouseout: function(event) {
+          // Do nothing. Let the popup be "sticky"
           event.target.setStyle({ fillOpacity: 0.5 });
-          event.target.closePopup();  // Close the popup on mouseout
         },
         click: function(event) {
           let clickLayer = event.target;
@@ -60,7 +62,7 @@ d3.json(link).then(function(data) {
 
           let clickedLgaName = feature.properties.ABB_NAME;
           let exampleLga = lgaDetails.find(lga => lga['LGA Name'].trim().toUpperCase() === clickedLgaName.trim().toUpperCase()) || {};
-          
+
           let popupContent = `
             <strong>LGA Name:</strong> ${exampleLga['LGA Name'] || 'N/A'}<br>
             <strong>Total LGA Accidents:</strong> ${exampleLga['Total LGA Accidents'] || 'N/A'}<br>
@@ -75,6 +77,7 @@ d3.json(link).then(function(data) {
     }
   }).addTo(mymap);
 });
+
         
 async function drawBarChart(filterBy) {
     let apiEndpoint = "";
