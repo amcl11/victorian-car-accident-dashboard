@@ -9,7 +9,7 @@ The goal of this Project is to tell a story using data visualisations with inter
 
 **TO ACCESS THE DASHBOARD:** Please run the *Flask_API.py* file which will direct you to the home / index.html route.
 
-![Alt text](../victoria-car-accident-dashboard/images/dashboard.png "Dashboard example")
+![Dashboard example](images/dashboard.png)
 
 *Which postcode in the Yarra Ranges LGA has the highest count of accidents?*  <br>
 *Which age group has the highest accident count?*  <br>
