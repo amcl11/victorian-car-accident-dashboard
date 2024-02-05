@@ -2,7 +2,7 @@
 ### Team members: 
  - Andrew McLaughlin
  - Mohamed Irfhan Varvani
- - Tran Thuy Van Phan*
+ - Tran Thuy Van Phan
 
 This is the repository for Monash University Bootcamp Project 3 (Group 10).
 The goal of this Project is to tell a story using data visualisations with interactivity allowing users to explore the data on their own. 
