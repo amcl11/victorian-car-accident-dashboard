@@ -63,6 +63,7 @@ def accidents_by_lga():
     # SQL query to get total accidents by LGA
     cursor.execute("SELECT LGA_NAME,COUNT(ACCIDENT_NO) FROM accidents GROUP BY LGA_NAME")
     total_accidents_result = cursor.fetchall()
+    print("Total Accidents looks like this:", total_accidents_result)
 
     # SQL query to determine the postcode with the highest number of accidents for each LGA
     worst_postcode_sql_query = '''
